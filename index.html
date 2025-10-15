@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calculadora</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="background"></div>
+    <div class="window">
+      <header class="titlebar">
+        <div class="title">
+          <span class="logo">≡</span>
+          <span>Calculadora</span>
+          <span id="memory-indicator" class="memory-indicator" title="Memória ativa">M</span>
+        </div>
+        <div class="actions">
+          <button id="history-toggle" class="icon-btn" aria-label="Mostrar histórico" title="Histórico (Ctrl+H)">🕘</button>
+          <button id="theme-toggle" class="icon-btn" aria-label="Alternar tema" title="Tema (Ctrl+T)">🌗</button>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="display">
+          <div id="secondary-display" class="secondary"> </div>
+          <div id="primary-display" class="primary">0</div>
+        </section>
+
+        <section class="memory-row" aria-label="Controles de memória">
+          <button class="btn ghost" data-memory="MC" title="Limpar memória">MC</button>
+          <button class="btn ghost" data-memory="MR" title="Recuperar memória">MR</button>
+          <button class="btn ghost" data-memory="M+" title="Somar à memória">M+</button>
+          <button class="btn ghost" data-memory="M-" title="Subtrair da memória">M-</button>
+          <button class="btn ghost" data-memory="MS" title="Armazenar na memória">MS</button>
+        </section>
+
+        <section class="keypad" aria-label="Teclado da calculadora">
+          <button class="btn fn" data-action="percent">%</button>
+          <button class="btn fn" data-action="ce">CE</button>
+          <button class="btn fn" data-action="clear">C</button>
+          <button class="btn fn" data-action="backspace" title="Apagar">⌫</button>
+
+          <button class="btn fn" data-action="reciprocal" title="1/x">1/x</button>
+          <button class="btn fn" data-action="square" title="x²">x²</button>
+          <button class="btn fn" data-action="sqrt" title="√">√</button>
+          <button class="btn op" data-operator="divide" title="Dividir">÷</button>
+
+          <button class="btn" data-digit="7">7</button>
+          <button class="btn" data-digit="8">8</button>
+          <button class="btn" data-digit="9">9</button>
+          <button class="btn op" data-operator="multiply" title="Multiplicar">×</button>
+
+          <button class="btn" data-digit="4">4</button>
+          <button class="btn" data-digit="5">5</button>
+          <button class="btn" data-digit="6">6</button>
+          <button class="btn op" data-operator="subtract" title="Subtrair">−</button>
+
+          <button class="btn" data-digit="1">1</button>
+          <button class="btn" data-digit="2">2</button>
+          <button class="btn" data-digit="3">3</button>
+          <button class="btn op" data-operator="add" title="Somar">+</button>
+
+          <button class="btn fn" data-action="negate" title="Sinal">±</button>
+          <button class="btn" data-digit="0">0</button>
+          <button class="btn" data-action="decimal" title="Decimal">,</button>
+          <button class="btn equals" data-action="equals" title="Igual">=</button>
+        </section>
+      </main>
+
+      <aside id="history-panel" class="history" aria-label="Histórico de cálculos" hidden>
+        <div class="history-header">
+          <h2>Histórico</h2>
+          <button id="history-clear" class="ghost small" title="Limpar histórico">Limpar</button>
+        </div>
+        <ul id="history-list" class="history-list"></ul>
+      </aside>
+    </div>
+
+    <!-- Paywall: Modal de Pagamento -->
+    <div id="paywall-backdrop" class="paywall-backdrop" aria-hidden="true">
+      <div class="paywall-modal" role="dialog" aria-modal="true" aria-labelledby="pay-title">
+        <button class="pay-close" id="pay-close" aria-label="Fechar">✕</button>
+        <header class="pay-header">
+          <div class="pay-badge">Premium</div>
+          <h2 id="pay-title">Desbloquear resultado</h2>
+          <p class="pay-subtitle">Pague para ver o resultado deste cálculo</p>
+          <div class="pay-amount">
+            <span class="currency">R$</span>
+            <span class="value" id="pay-amount">39,99</span>
+          </div>
+        </header>
+
+        <form id="pay-form" class="pay-form" autocomplete="off">
+          <div class="card-types" role="radiogroup" aria-label="Bandeira do cartão">
+            <label class="card-type">
+              <input type="radio" name="brand" value="visa" />
+              <span class="chip visa">VISA</span>
+            </label>
+            <label class="card-type">
+              <input type="radio" name="brand" value="mastercard" />
+              <span class="chip mc">MC</span>
+            </label>
+            <label class="card-type">
+              <input type="radio" name="brand" value="amex" />
+              <span class="chip amex">AMEX</span>
+            </label>
+          </div>
+
+          <div class="field">
+            <label>Nome impresso no cartão</label>
+            <input id="card-name" type="text" placeholder="JOAO DA SILVA" inputmode="text" />
+          </div>
+
+          <div class="field">
+            <label>Número do cartão</label>
+            <div class="input-with-icon">
+              <input id="card-number" type="text" placeholder="0000 0000 0000 0000" inputmode="numeric" />
+              <span id="brand-indicator" class="brand-indicator">•••</span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>Validade (MM/AA)</label>
+              <input id="card-expiry" type="text" placeholder="MM/AA" inputmode="numeric" />
+            </div>
+            <div class="field">
+              <label>CVV</label>
+              <input id="card-cvv" type="password" placeholder="•••" inputmode="numeric" />
+            </div>
+          </div>
+
+          <button id="pay-submit" type="submit" class="pay-btn" disabled>
+            <span class="spinner" aria-hidden="true"></span>
+            <span class="btn-text">Pagar R$ 39,99</span>
+          </button>
+
+          <p class="disclaimer">Simulação de pagamento para demonstração. Nenhum dado é enviado.</p>
+        </form>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <footer class="footer">
+      <small>Feito com ♥ — Suporte ao teclado, tema, histórico, memória e paywall</small>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
